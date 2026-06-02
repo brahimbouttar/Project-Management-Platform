@@ -9,7 +9,15 @@ const router = Router();
 router.post(
   '/workspaces/:workspaceId/channels',
   authenticate,
-  [body('name').notEmpty().withMessage('Channel name is required'), validate],
+  [
+    body('name')
+      .notEmpty().withMessage('Channel name is required')
+      .matches(/^[a-z0-9-]+$/).withMessage('Channel name must be lowercase alphanumeric with dashes'),
+    body('description')
+      .optional()
+      .isLength({ max: 500 }).withMessage('Description must be at most 500 characters'),
+    validate,
+  ],
   channelController.create
 );
 

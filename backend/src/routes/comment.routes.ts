@@ -9,7 +9,12 @@ const router = Router();
 router.post(
   '/tasks/:taskId/comments',
   authenticate,
-  [body('content').notEmpty().withMessage('Comment content is required'), validate],
+  [
+    body('content')
+      .notEmpty().withMessage('Comment content is required')
+      .isLength({ max: 5000 }).withMessage('Comment must be at most 5000 characters'),
+    validate,
+  ],
   commentController.create
 );
 

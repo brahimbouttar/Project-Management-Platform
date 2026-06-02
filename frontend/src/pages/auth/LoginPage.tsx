@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useLogin } from '../../hooks/useAuth';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
@@ -8,7 +8,10 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const login = useLogin();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const from = (location.state as any)?.from || params.get('return') || '/workspaces';
+  const login = useLogin(from);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +68,7 @@ const LoginPage = () => {
           </form>
           <p className="mt-4 text-center text-sm text-gray-500">
             Don't have an account?{' '}
-            <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+            <Link to={from !== '/workspaces' ? `/register?return=${encodeURIComponent(from)}` : '/register'} className="font-medium text-indigo-600 hover:text-indigo-500">
               Sign up
             </Link>
           </p>

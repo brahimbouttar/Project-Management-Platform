@@ -25,8 +25,10 @@ export const errorHandler = (
   }
 
   console.error('Unhandled error:', err);
+  const isProduction = process.env.NODE_ENV === 'production';
   return res.status(500).json({
-    error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message,
+    error: isProduction ? 'Internal server error' : err.message,
+    ...(isProduction ? {} : { stack: err.stack }),
   });
 };
 

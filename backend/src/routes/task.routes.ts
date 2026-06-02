@@ -9,7 +9,19 @@ const router = Router();
 router.post(
   '/projects/:projectId/tasks',
   authenticate,
-  [body('title').notEmpty().withMessage('Task title is required'), validate],
+  [
+    body('title').notEmpty().withMessage('Task title is required'),
+    body('description')
+      .optional()
+      .isLength({ max: 5000 }).withMessage('Description must be at most 5000 characters'),
+    body('priority')
+      .optional()
+      .isIn(['urgent', 'high', 'medium', 'low']).withMessage('Invalid priority'),
+    body('type')
+      .optional()
+      .isIn(['task', 'bug', 'epic', 'feature']).withMessage('Invalid task type'),
+    validate,
+  ],
   taskController.create
 );
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useRegister } from '../../hooks/useAuth';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
@@ -7,7 +7,10 @@ import Button from '../../components/ui/Button';
 const RegisterPage = () => {
   const [form, setForm] = useState({ email: '', username: '', password: '', displayName: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const register = useRegister();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const from = (location.state as any)?.from || params.get('return') || '/workspaces';
+  const register = useRegister(from);
 
   const updateField = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -20,7 +23,7 @@ const RegisterPage = () => {
     const newErrors: Record<string, string> = {};
     if (!form.email) newErrors.email = 'Email is required';
     if (!form.username || form.username.length < 3) newErrors.username = 'Username must be at least 3 characters';
-    if (!form.password || form.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
+    if (!form.password || form.password.length < 8) newErrors.password = 'Password must be at least 8 characters';
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -75,7 +78,7 @@ const RegisterPage = () => {
               value={form.password}
               onChange={(e) => updateField('password', e.target.value)}
               error={errors.password}
-              placeholder="Min 6 characters"
+              placeholder="Min 8 characters"
             />
             <Button type="submit" className="w-full" loading={register.isPending}>
               Create Account
@@ -83,7 +86,7 @@ const RegisterPage = () => {
           </form>
           <p className="mt-4 text-center text-sm text-gray-500">
             Already have an account?{' '}
-            <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+            <Link to={from !== '/workspaces' ? `/login?return=${encodeURIComponent(from)}` : '/login'} className="font-medium text-indigo-600 hover:text-indigo-500">
               Sign in
             </Link>
           </p>

@@ -9,6 +9,15 @@ interface JwtPayload {
   role: string;
 }
 
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.warn('WARNING: JWT_SECRET environment variable is not set. Using a dev-only fallback. Set JWT_SECRET in production.');
+}
+
+const getSecret = (): string => {
+  return JWT_SECRET || 'dev-secret-key-change-in-production-1234567890';
+};
+
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -17,10 +26,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
 
   const token = authHeader.split(' ')[1];
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || 'dev-secret-key-change-in-production-1234567890'
-    ) as JwtPayload;
+    const decoded = jwt.verify(token, getSecret()) as JwtPayload;
     req.user = {
       id: decoded.id,
       email: decoded.email,
@@ -41,10 +47,7 @@ export const optionalAuth = (req: Request, res: Response, next: NextFunction) =>
 
   const token = authHeader.split(' ')[1];
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || 'dev-secret-key-change-in-production-1234567890'
-    ) as JwtPayload;
+    const decoded = jwt.verify(token, getSecret()) as JwtPayload;
     req.user = {
       id: decoded.id,
       email: decoded.email,

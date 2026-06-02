@@ -8,5 +8,12 @@ declare module 'express' {
       username: string;
       role: string;
     };
+    workspaceMember?: {
+      id: string;
+      workspaceId: string;
+      userId: string;
+      role: string;
+      joinedAt: Date;
+    };
   }
 }

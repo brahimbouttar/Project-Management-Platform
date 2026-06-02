@@ -9,6 +9,13 @@ const router = Router();
 router.post(
   '/projects/:projectId/boards',
   authenticate,
+  [
+    body('name')
+      .optional()
+      .isLength({ max: 100 })
+      .withMessage('Board name must be at most 100 characters'),
+    validate,
+  ],
   boardController.create
 );
 

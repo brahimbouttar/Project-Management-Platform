@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { authApi } from '../api/auth.api';
 import { useAuthStore } from '../store/authStore';
 
-export const useLogin = () => {
+export const useLogin = (from?: string) => {
   const login = useAuthStore((s) => s.login);
   const navigate = useNavigate();
 
@@ -11,12 +11,12 @@ export const useLogin = () => {
     mutationFn: (data: { email: string; password: string }) => authApi.login(data),
     onSuccess: (data) => {
       login(data.user, data.token);
-      navigate('/workspaces');
+      navigate(from || '/workspaces', { replace: true });
     },
   });
 };
 
-export const useRegister = () => {
+export const useRegister = (from?: string) => {
   const login = useAuthStore((s) => s.login);
   const navigate = useNavigate();
 
@@ -25,7 +25,7 @@ export const useRegister = () => {
       authApi.register(data),
     onSuccess: (data) => {
       login(data.user, data.token);
-      navigate('/workspaces');
+      navigate(from || '/workspaces', { replace: true });
     },
   });
 };
