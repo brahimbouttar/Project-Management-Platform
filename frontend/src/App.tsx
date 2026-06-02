@@ -18,6 +18,7 @@ import PageEditorPage from './pages/docs/PageEditorPage';
 import ProjectSettings from './pages/project/ProjectSettings';
 import MembersPage from './pages/project/MembersPage';
 import ChatPage from './pages/chat/ChatPage';
+import ProfileSettingsPage from './pages/settings/ProfileSettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -55,6 +56,10 @@ const AppContent = () => {
         <Route
           path="/workspaces/create"
           element={<ProtectedRoute><CreateWorkspacePage /></ProtectedRoute>}
+        />
+        <Route
+          path="/settings/profile"
+          element={<ProtectedRoute><ProfileSettingsPage /></ProtectedRoute>}
         />
 
         <Route

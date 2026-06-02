@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Search, Bell, Menu } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { useQuery } from '@tanstack/react-query';
@@ -21,6 +21,7 @@ const TopBar = ({ onMenuClick }: TopBarProps) => {
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const location = useLocation();
+  const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
 
@@ -144,7 +145,7 @@ const TopBar = ({ onMenuClick }: TopBarProps) => {
             <p className="text-sm font-medium text-gray-900">{user?.displayName}</p>
             <p className="text-xs text-gray-500">{user?.email}</p>
           </div>
-          <DropdownItem onClick={() => {}}>Profile Settings</DropdownItem>
+          <DropdownItem onClick={() => navigate('/settings/profile')}>Profile Settings</DropdownItem>
           <DropdownDivider />
           <DropdownItem onClick={logout} danger>Log out</DropdownItem>
         </Dropdown>
